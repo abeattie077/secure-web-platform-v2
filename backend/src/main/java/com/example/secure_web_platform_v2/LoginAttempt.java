@@ -22,8 +22,10 @@ public class LoginAttempt {
 	@Column(name = "attempt_id", unique = true, nullable = false)
 	private long attemptId;
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = true)
 	private User user;
+	@Column(name = "username_used", unique = false, nullable = true)
+	private String usernameUsed;
 	private boolean loginSuccessful;
 	private String ipAddress;
 	private LocalDateTime attemptTime;
@@ -31,10 +33,11 @@ public class LoginAttempt {
 	//constructors
 	public LoginAttempt() {
 	}
-	public LoginAttempt(User user, boolean wasSuccessful) {
+	public LoginAttempt(User user, boolean wasSuccessful, String usernameUsed) {
 		this.user = user;
 		this.loginSuccessful = wasSuccessful;
 		this.attemptTime = LocalDateTime.now();
+		this.usernameUsed = usernameUsed;
 	}
 	
 	//getters

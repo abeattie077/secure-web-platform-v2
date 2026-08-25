@@ -26,11 +26,10 @@ public class User {
 	//constructors
 	public User() {
 	}
-	public User(String firstName, String lastName, String username, String password) {
+	public User(String firstName, String lastName, String username) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.password = password;
 	}
 	
 	//getters
@@ -46,6 +45,9 @@ public class User {
 	public String getUsername() {
 		return this.username;
 	}
+	public String getPassword() {
+		return this.password;
+	}
 	
 	//setters
 	public void setFirstName(String firstName) {
@@ -56,5 +58,8 @@ public class User {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public void setHashedPW(String pasword) {
+		this.password = password;
 	}
 }
