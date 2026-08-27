@@ -33,11 +33,12 @@ public class LoginAttempt {
 	//constructors
 	public LoginAttempt() {
 	}
-	public LoginAttempt(User user, boolean wasSuccessful, String usernameUsed) {
+	public LoginAttempt(User user, boolean wasSuccessful, String usernameUsed, String addressIP) {
 		this.user = user;
 		this.loginSuccessful = wasSuccessful;
 		this.attemptTime = LocalDateTime.now();
 		this.usernameUsed = usernameUsed;
+		this.ipAddress = addressIP;
 	}
 	
 	//getters

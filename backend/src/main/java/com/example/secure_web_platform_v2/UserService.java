@@ -11,12 +11,14 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final LoginAttemptService loginAttemptService;
+	private boolean usernameLockedStatus;
 	
 	//constructors
 	public UserService (UserRepository userRepository, BCryptPasswordEncoder encoder, LoginAttemptService loginAttemptService) {
 		this.userRepository = userRepository;
 		this.encoder = encoder;
 		this.loginAttemptService = loginAttemptService;
+		this.usernameLockedStatus = false;
 	}
 	
 	//save new user
@@ -34,21 +36,28 @@ public class UserService {
 	}
 	
 	//login
-	public boolean login(String username, String password) {
+	public boolean login(LoginRequest request, String addressIP) {
 		boolean validLogin = false;
 		boolean isValidUser = false;
+		boolean validAttempt = loginAttemptService.isValidAttempt(request.getUsername());
+		this.usernameLockedStatus = !validAttempt;
 		User target = null;
-		Optional <User> optionalTarget = this.findByUsername(username);
+		Optional <User> optionalTarget = this.findByUsername(request.getUsername());
 		if (optionalTarget.isPresent()) {
 			target = optionalTarget.get();
 			isValidUser = true;
 		}
-		if (isValidUser) {
-			validLogin = encoder.matches(password, target.getPassword());
+		if (isValidUser && validAttempt) {
+			validLogin = encoder.matches(request.getPassword(), target.getPassword());
 		}
-		LoginAttempt newAttempt = new LoginAttempt(target, validLogin, username);
+		LoginAttempt newAttempt = new LoginAttempt(target, validLogin, request.getUsername(), addressIP);
 		loginAttemptService.newAttempt(newAttempt);
 		return validLogin;
+	}
+	
+	//login lockout
+	public boolean getIsUsernameLocked() {
+		return usernameLockedStatus;
 	}
 	
 }
