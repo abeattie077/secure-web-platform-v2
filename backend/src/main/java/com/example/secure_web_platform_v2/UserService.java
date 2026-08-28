@@ -34,6 +34,13 @@ public class UserService {
 		Optional<User> target = userRepository.findByUsername(username);
 		return target;
 	}
+	public boolean usernameExists(String username) {
+		boolean result = false;
+		if (this.findByUsername(username).isPresent()) {
+			result = true;
+		}
+		return result;
+	}
 	
 	//login
 	public boolean login(LoginRequest request, String addressIP) {

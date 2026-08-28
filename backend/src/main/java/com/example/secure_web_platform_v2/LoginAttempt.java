@@ -57,6 +57,9 @@ public class LoginAttempt {
 	public LocalDateTime getDateTime() {
 		return this.attemptTime;
 	}
+	public String getUsernameUsed() {
+		return this.usernameUsed;
+	}
 	
 	//setters
 	

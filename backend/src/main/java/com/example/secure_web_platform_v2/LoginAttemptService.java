@@ -10,16 +10,26 @@ public class LoginAttemptService {
 	
 	//attributes
 	private final LoginAttemptRepository loginAttemptRepository;
-	
+	private final IncidentService incidentService;
 	
 	//constructor
-	public LoginAttemptService (LoginAttemptRepository loginAttemptRepository) {
+	public LoginAttemptService (LoginAttemptRepository loginAttemptRepository, IncidentService incidentService) {
 		this.loginAttemptRepository =  loginAttemptRepository;
+		this.incidentService = incidentService;
 	}
 	
 	//save new login attempt
 	public LoginAttempt newAttempt(LoginAttempt attempt) {
-		return loginAttemptRepository.save(attempt);
+		LoginAttempt savedAttempt = loginAttemptRepository.save(attempt);
+		if (!(savedAttempt.wasSuccessful())) {
+			String severityLevel = "high";
+			if (this.isValidAttempt(savedAttempt.getUsernameUsed())) {
+				severityLevel = "low";
+			}
+			Incident newIncident = new Incident(savedAttempt, severityLevel);
+			incidentService.newIncident(newIncident);
+		}
+		return savedAttempt;
 	}
 	
 	//check to see if is valid login attempt

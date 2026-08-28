@@ -1,5 +1,8 @@
 package com.example.secure_web_platform_v2;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
 	//attributes
@@ -21,8 +25,18 @@ public class UserController {
 	
 	//POST Method
 	@PostMapping("/register")
-	public User createNewUser(@RequestBody RegisterRequest request) {
-		return userService.newUser(request);
+	public ResponseEntity<String> createNewUser(@RequestBody RegisterRequest request) {
+		if (userService.usernameExists(request.getUsername())) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.body("The requested username is already in use. Please enter a different username.");
+		}
+		else {
+			userService.newUser(request);
+			return ResponseEntity
+					.status(HttpStatus.CREATED)
+					.body("Account created successfully.");
+		}
 	}
 	
 	//LOGIN Method
